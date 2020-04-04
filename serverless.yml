@@ -1,0 +1,122 @@
+org: akinbamizacheus
+service: abc
+
+plugins:
+  - serverless-python-requirements
+  - serverless-wsgi
+custom:
+  wsgi:
+    app: app.app
+    packRequirements: false
+  pythonRequirements:
+    dockerizePip: true
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: us-east-2
+  profile: smartpy
+
+functions:
+  app:
+    handler: wsgi.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+
+
+  login:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/login
+          method: post
+          cors: true
+
+  register:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/register
+          method: post
+          cors: true
+
+
+  logout:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/logout/access
+          method: post
+          cors: true
+
+  refresh_logout:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/logout/refresh
+          method: post
+          cors: true
+
+
+  refresh_token:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/token/refresh
+          method: post
+          cors: true
+
+
+  users:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/users
+          method: get
+          cors: true
+
+
+
+  # post api
+  create_post:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/post/create
+          method: post
+          cors: true
+
+  posts:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/posts
+          method: get
+          cors: true
+
+  post_detail:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/posts/{slug}
+          method: get
+          cors: true
+
+  post_update:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/posts/{slug}
+          method: put
+          cors: true
+
+  post_delete:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/posts/{slug}
+          method: delete
+          cors: true
+
