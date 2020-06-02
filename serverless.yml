@@ -14,9 +14,21 @@ custom:
 provider:
   name: aws
   runtime: python3.6
-  stage: dev
+  stage: prod
   region: us-east-2
   profile: smartpy
+  environment:
+    ACCESS_KEY: AKIA2FHMO3WZJCEVOU5X
+    SECRETE_KEY: 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
+    BUCKET: abi-blog-images
+    REGION: us-east-2
+    EMAIL: Helloschoolofabi@gmail.com
+    PASSWORD: "Orange123:"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "s3:*"
+      Resource: 'arn:aws:s3:::abi-blog-images/*'
 
 functions:
   app:
@@ -39,7 +51,7 @@ functions:
     events:
       - http:
           path: api/register
-          method: post
+          method: any
           cors: true
 
 
@@ -68,24 +80,29 @@ functions:
           method: post
           cors: true
 
+  secrete:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/secret
+          method: get
+          cors: true
+
 
   users:
     handler: wsgi.handler
     events:
       - http:
           path: api/users
-          method: get
+          method: any
           cors: true
 
-
-
-  # post api
-  create_post:
+  user_detail:
     handler: wsgi.handler
     events:
       - http:
-          path: api/post/create
-          method: post
+          path: api/users/{id}
+          method: any
           cors: true
 
   posts:
@@ -93,30 +110,96 @@ functions:
     events:
       - http:
           path: api/posts
+          method: any
+          cors: true
+
+  blog_image:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/image/upload
+          method: post
+          cors: true
+
+  contacts:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/contacts
+          method: any
+          cors: true
+
+  statistics:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/statistics
           method: get
+          cors: true
+
+  subscriptions:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: api/subscriptions
+          method: any
           cors: true
 
   post_detail:
     handler: wsgi.handler
     events:
       - http:
-          path: api/posts/{slug}
-          method: get
+          path: api/posts/{id}
+          method: any
           cors: true
 
-  post_update:
+  testimonies:
     handler: wsgi.handler
     events:
       - http:
-          path: api/posts/{slug}
-          method: put
+          path: api/testimonies
+          method: any
           cors: true
 
-  post_delete:
+  testimony_detail:
     handler: wsgi.handler
     events:
       - http:
-          path: api/posts/{slug}
-          method: delete
+          path: api/testimonies/{id}
+          method: any
           cors: true
+
+  # upload_image:
+  #   handler: wsgi.handler
+  #   events:
+  #     - http:
+  #       path: api/image/upload
+  #       method: post
+  #       cors: true
+
+# Resources:
+#   ResizedImages:
+#     Type: AWS::S3::Bucket
+#     Properties:
+#       BucketName: abi-blog-images
+
+resources:
+  Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: abi-blog-images
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"
+  
 
