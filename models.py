@@ -127,7 +127,7 @@ class Post(db.Model):
 
     @classmethod
     def return_all(cls):
-        queryset = cls.query.all()
+        queryset = cls.query.order_by(-cls.date_posted).all()
         posts = posts_schema.dump(queryset)
         return posts
 
@@ -184,7 +184,7 @@ class Contact(db.Model):
 
     @classmethod
     def return_all(cls):
-        queryset = cls.query.all()
+        queryset = cls.query.order_by(-cls.date_posted).all()
         contacts = contacts_schema.dump(queryset)
         return contacts
 
@@ -217,7 +217,7 @@ class Subscription(db.Model):
 
     @classmethod
     def return_all(cls):
-        queryset = cls.query.all()
+        queryset = cls.query.order_by(cls.date_posted).all()
         subscriptions = subscriptions_schema.dump(queryset)
         return subscriptions
 

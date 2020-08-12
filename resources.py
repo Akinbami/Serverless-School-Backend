@@ -22,7 +22,7 @@ from botocore.client import Config
 from io import BytesIO
 import os
 
-from models import User, Post,Contact,Subscription,Testimonial
+from models import User, Post,Contact,Subscription,Testimonial,posts_schema
 from utils import create_presigned_url,send_email
       
 def abort_if_blog_doesnt_exist(id):
@@ -156,10 +156,12 @@ class Blog(Resource):
             post.is_published = data['is_published']
         if "category" in data:
             post.category = data['category']
-        if "draft" in data:
-            post.draft = True if data['draft']=="on" else False
+        if "is_draft" in data:
+            post.is_draft = data['is_draft']
         if "image_url" in data:
             post.image_url = data['image_url']
+        if "date" in data:
+            post.date_posted = data['date']
 
         post.date_updated = str(datetime.today())
         update_response = post.update_db()
@@ -172,6 +174,9 @@ class Blog(Resource):
 # shows a list of all todos, and lets you POST to add new tasks
 class BlogList(Resource):
     def get(self):
+        is_draft = request.args.get("draft")
+        if is_draft:
+            return posts_schema.dump(Post.query.filter_by(is_draft=is_draft).all())
         return Post.return_all()
 
     @jwt_required
@@ -182,7 +187,7 @@ class BlogList(Resource):
         content = args.get('content')
         is_published = args.get('is_published')
         category = args.get('category')
-        draft = True if args.get('is_draft')=="on" else False
+        draft = args.get('is_draft')
         image = args.get('image_url')
         slug = slugify(title)
 
