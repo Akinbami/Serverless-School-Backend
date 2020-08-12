@@ -22,4 +22,3 @@ var/
 
 # Serverless directories
 .serverless
-*.yml

@@ -18,12 +18,12 @@ provider:
   region: us-east-2
   profile: smartpy
   environment:
-    ACCESS_KEY: AKIA2FHMO3WZJCEVOU5X
-    SECRETE_KEY: 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
-    BUCKET: abi-blog-images
-    REGION: us-east-2
-    EMAIL: Helloschoolofabi@gmail.com
-    PASSWORD: "Orange123:"
+    ACCESS_KEY: ${env:ACCESS_KEY}
+    SECRETE_KEY: ${env:SECRETE_KEY}
+    BUCKET: ${env:BUCKET}
+    REGION: ${env:REGION}
+    EMAIL: ${env:EMAIL}
+    PASSWORD: ${env:PASSWORD}
   iamRoleStatements:
     - Effect: Allow
       Action:
